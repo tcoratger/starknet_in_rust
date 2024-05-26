@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use cairo_vm::types::builtin_name::BuiltinName;
 use cairo_vm::vm::runners::cairo_runner::ExecutionResources;
 
 use crate::{definitions::transaction_type::TransactionType, transaction::error::TransactionError};
@@ -29,8 +30,8 @@ impl Default for OsResources {
                     n_steps: ESTIMATED_INVOKE_FUNCTION_STEPS,
                     n_memory_holes: 68,
                     builtin_instance_counter: HashMap::from([
-                        ("pedersen_builtin".to_string(), 16),
-                        ("range_check_builtin".to_string(), 80),
+                        (BuiltinName::from_str("pedersen_builtin").unwrap(), 16),
+                        (BuiltinName::from_str("range_check_builtin").unwrap(), 80),
                     ]),
                 },
             ),
@@ -40,8 +41,8 @@ impl Default for OsResources {
                     n_steps: ESTIMATED_DECLARE_STEPS,
                     n_memory_holes: 66,
                     builtin_instance_counter: HashMap::from([
-                        ("pedersen_builtin".to_string(), 15),
-                        ("range_check_builtin".to_string(), 63),
+                        (BuiltinName::from_str("pedersen_builtin").unwrap(), 15),
+                        (BuiltinName::from_str("range_check_builtin").unwrap(), 63),
                     ]),
                 },
             ),
@@ -59,8 +60,8 @@ impl Default for OsResources {
                     n_steps: ESTIMATED_DEPLOY_ACCOUNT_STEPS,
                     n_memory_holes: 82,
                     builtin_instance_counter: HashMap::from([
-                        ("pedersen_builtin".to_string(), 23),
-                        ("range_check_builtin".to_string(), 83),
+                        (BuiltinName::from_str("pedersen_builtin").unwrap(), 23),
+                        (BuiltinName::from_str("range_check_builtin").unwrap(), 83),
                     ]),
                 },
             ),
@@ -70,8 +71,8 @@ impl Default for OsResources {
                     n_steps: ESTIMATED_L1_HANDLER_STEPS,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([
-                        ("pedersen_builtin".to_string(), 11),
-                        ("range_check_builtin".to_string(), 17),
+                        (BuiltinName::from_str("pedersen_builtin").unwrap(), 11),
+                        (BuiltinName::from_str("range_check_builtin").unwrap(), 17),
                     ]),
                 },
             ),
@@ -84,7 +85,7 @@ impl Default for OsResources {
                     n_steps: 760,
                     n_memory_holes: 4,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         20,
                     )]),
                 },
@@ -95,7 +96,7 @@ impl Default for OsResources {
                     n_steps: 713,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         19,
                     )]),
                 },
@@ -106,7 +107,7 @@ impl Default for OsResources {
                     n_steps: 692,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         15,
                     )]),
                 },
@@ -117,8 +118,8 @@ impl Default for OsResources {
                     n_steps: 1010,
                     n_memory_holes: 13,
                     builtin_instance_counter: HashMap::from([
-                        ("range_check_builtin".to_string(), 19),
-                        ("pedersen_builtin".to_string(), 7),
+                        (BuiltinName::from_str("range_check_builtin").unwrap(), 19),
+                        (BuiltinName::from_str("pedersen_builtin").unwrap(), 7),
                     ]),
                 },
             ),
@@ -128,7 +129,7 @@ impl Default for OsResources {
                     n_steps: 61,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -139,7 +140,7 @@ impl Default for OsResources {
                     n_steps: 74,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         2,
                     )]),
                 },
@@ -166,7 +167,7 @@ impl Default for OsResources {
                     n_steps: 62,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -177,7 +178,7 @@ impl Default for OsResources {
                     n_steps: 62,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -188,7 +189,7 @@ impl Default for OsResources {
                     n_steps: 62,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -207,7 +208,7 @@ impl Default for OsResources {
                     n_steps: 62,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -226,7 +227,7 @@ impl Default for OsResources {
                     n_steps: 751,
                     n_memory_holes: 4,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         20,
                     )]),
                 },
@@ -237,7 +238,7 @@ impl Default for OsResources {
                     n_steps: 659,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         15,
                     )]),
                 },
@@ -248,7 +249,7 @@ impl Default for OsResources {
                     n_steps: 98,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -259,7 +260,7 @@ impl Default for OsResources {
                     n_steps: 139,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -270,7 +271,7 @@ impl Default for OsResources {
                     n_steps: 87,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },
@@ -281,7 +282,7 @@ impl Default for OsResources {
                     n_steps: 89,
                     n_memory_holes: 0,
                     builtin_instance_counter: HashMap::from([(
-                        "range_check_builtin".to_string(),
+                        BuiltinName::from_str("range_check_builtin").unwrap(),
                         1,
                     )]),
                 },

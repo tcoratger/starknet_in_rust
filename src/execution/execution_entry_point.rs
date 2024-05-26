@@ -27,8 +27,8 @@ use crate::{
     },
 };
 use cairo_lang_sierra::program::Program as SierraProgram;
-use cairo_lang_starknet::casm_contract_class::{CasmContractClass, CasmContractEntryPoint};
-use cairo_lang_starknet::contract_class::ContractEntryPoints;
+use cairo_lang_starknet_classes::casm_contract_class::{CasmContractClass, CasmContractEntryPoint};
+use cairo_lang_starknet_classes::contract_class::ContractEntryPoints;
 use cairo_vm::{
     types::{
         program::Program,
@@ -419,8 +419,13 @@ impl ExecutionEntryPoint {
 
         // create starknet runner
         let mut vm = VirtualMachine::new(false);
-        let mut cairo_runner = CairoRunner::new(&contract_class.program, "starknet", false)?;
-        cairo_runner.initialize_function_runner(&mut vm)?;
+        let mut cairo_runner = CairoRunner::new(
+            &contract_class.program,
+            cairo_vm::types::layout_name::LayoutName::starknet,
+            false,
+            true,
+        )?;
+        cairo_runner.initialize_function_runner()?;
 
         validate_contract_deployed(state, &self.contract_address)?;
 
@@ -530,12 +535,15 @@ impl ExecutionEntryPoint {
         // get a program from the casm contract class
         let program: Program = contract_class.as_ref().clone().try_into()?;
         // create and initialize a cairo runner for running cairo 1 programs.
-        let mut cairo_runner = CairoRunner::new(&program, "starknet", false)?;
-
-        cairo_runner.initialize_function_runner_cairo_1(
-            &mut vm,
-            &parse_builtin_names(&entry_point.builtins)?,
+        let mut cairo_runner = CairoRunner::new(
+            &program,
+            cairo_vm::types::layout_name::LayoutName::starknet,
+            false,
+            true,
         )?;
+
+        cairo_runner
+            .initialize_function_runner_cairo_1(&parse_builtin_names(&entry_point.builtins)?)?;
         validate_contract_deployed(state, &self.contract_address)?;
         // prepare OS context
         let os_context = StarknetRunner::<SyscallHintProcessor<S, C>>::prepare_os_context_cairo1(

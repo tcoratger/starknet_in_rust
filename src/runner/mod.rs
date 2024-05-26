@@ -1,9 +1,9 @@
 use crate::execution::CallResult;
 use crate::syscalls::syscall_handler::HintProcessorPostRun;
 use crate::transaction::error::TransactionError;
-use cairo_lang_starknet::casm_contract_class::CasmContractClass;
+use cairo_lang_starknet_classes::casm_contract_class::CasmContractClass;
 use cairo_vm::hint_processor::hint_processor_definition::HintProcessor;
-use cairo_vm::serde::deserialize_program::BuiltinName;
+use cairo_vm::types::builtin_name::BuiltinName;
 use cairo_vm::types::errors::math_errors::MathError;
 use cairo_vm::Felt252;
 use cairo_vm::{
@@ -35,22 +35,9 @@ pub fn get_casm_contract_builtins(
         .unwrap()
         .builtins
         .iter()
-        .map(|n| format!("{n}_builtin"))
-        .map(|s| match &*s {
-            cairo_vm::vm::runners::builtin_runner::OUTPUT_BUILTIN_NAME => BuiltinName::output,
-            cairo_vm::vm::runners::builtin_runner::RANGE_CHECK_BUILTIN_NAME => {
-                BuiltinName::range_check
-            }
-            cairo_vm::vm::runners::builtin_runner::HASH_BUILTIN_NAME => BuiltinName::pedersen,
-            cairo_vm::vm::runners::builtin_runner::SIGNATURE_BUILTIN_NAME => BuiltinName::ecdsa,
-            cairo_vm::vm::runners::builtin_runner::KECCAK_BUILTIN_NAME => BuiltinName::keccak,
-            cairo_vm::vm::runners::builtin_runner::BITWISE_BUILTIN_NAME => BuiltinName::bitwise,
-            cairo_vm::vm::runners::builtin_runner::EC_OP_BUILTIN_NAME => BuiltinName::ec_op,
-            cairo_vm::vm::runners::builtin_runner::POSEIDON_BUILTIN_NAME => BuiltinName::poseidon,
-            cairo_vm::vm::runners::builtin_runner::SEGMENT_ARENA_BUILTIN_NAME => {
-                BuiltinName::segment_arena
-            }
-            _ => panic!("Invalid builtin {s}"),
+        .map(|s| match BuiltinName::from_str(&s) {
+            Some(builtin_name) => builtin_name,
+            None => panic!("Invalid builtin {s}"),
         })
         .collect()
 }
@@ -96,7 +83,6 @@ where
             &args,
             verify_secure,
             program_segment_size,
-            &mut self.vm,
             &mut self.hint_processor,
         )?;
         Ok(())
@@ -117,7 +103,7 @@ where
         let program_builtins = get_casm_contract_builtins(contract_class, entrypoint_offset);
 
         self.cairo_runner
-            .initialize_function_runner_cairo_1(&mut self.vm, &program_builtins)?;
+            .initialize_function_runner_cairo_1(&program_builtins)?;
 
         // Load builtin costs
         let builtin_costs: Vec<MaybeRelocatable> =
@@ -155,7 +141,6 @@ where
             &entrypoint_args,
             true,
             Some(self.cairo_runner.get_program().data_len() + program_extra_data.len()),
-            &mut self.vm,
             &mut self.hint_processor,
         )?;
 
@@ -164,7 +149,7 @@ where
 
     /// Returns and ExecutionResources struct that contains the resources used by the contract being execute.
     pub fn get_execution_resources(&self) -> Result<ExecutionResources, TransactionError> {
-        Ok(self.cairo_runner.get_execution_resources(&self.vm)?)
+        Ok(self.cairo_runner.get_execution_resources()?)
     }
 
     /// Return a vector that holds the data and pointers used to build the CallResult
@@ -236,15 +221,15 @@ where
         let builtin_runners = vm
             .get_builtin_runners()
             .iter()
-            .map(|runner| (runner.name(), runner.clone()))
+            .map(|runner| (runner.name().to_str_with_suffix(), runner.clone()))
             .collect::<HashMap<&str, BuiltinRunner>>();
 
         cairo_runner
             .get_program_builtins()
             .iter()
             .for_each(|builtin| {
-                if builtin_runners.contains_key(builtin.name()) {
-                    let b_runner = builtin_runners.get(builtin.name()).unwrap();
+                if builtin_runners.contains_key(builtin.to_str_with_suffix()) {
+                    let b_runner = builtin_runners.get(builtin.to_str_with_suffix()).unwrap();
                     let stack = b_runner.initial_stack();
                     os_context.extend(stack);
                 }
@@ -272,15 +257,15 @@ where
         let builtin_runners = vm
             .get_builtin_runners()
             .iter()
-            .map(|runner| (runner.name(), runner))
+            .map(|runner| (runner.name().to_str_with_suffix(), runner))
             .collect::<HashMap<&str, &BuiltinRunner>>();
 
         cairo_runner
             .get_program_builtins()
             .iter()
             .for_each(|builtin| {
-                if builtin_runners.contains_key(builtin.name()) {
-                    let b_runner = builtin_runners.get(builtin.name()).unwrap();
+                if builtin_runners.contains_key(builtin.to_str_with_suffix()) {
+                    let b_runner = builtin_runners.get(builtin.to_str_with_suffix()).unwrap();
                     let stack = b_runner.initial_stack();
                     os_context.extend(stack);
                 }
@@ -332,11 +317,11 @@ where
             _ => return Err(TransactionError::NotARelocatableValue),
         };
 
-        let expected_stop_ptr = seg_base_ptr
+        let expected_stop_ptr = (*seg_base_ptr
             + self
                 .vm
                 .get_segment_used_size(seg_base_ptr.segment_index as usize)
-                .ok_or(TransactionError::InvalidSegmentSize)?;
+                .ok_or(TransactionError::InvalidSegmentSize)?)?;
 
         let seg_stop_ptr: Relocatable = match segment_stop_ptr {
             MaybeRelocatable::RelocatableValue(val) => *val,
@@ -361,9 +346,7 @@ where
         // The returned values are os_context, retdata_size, retdata_ptr.
         let os_context_end = (self.vm.get_ap() - 5)?;
 
-        let stack_ptr = self
-            .cairo_runner
-            .get_builtins_final_stack(&mut self.vm, os_context_end)?;
+        let stack_ptr = self.cairo_runner.get_builtins_final_stack(os_context_end)?;
 
         let final_os_context_ptr = (stack_ptr - 2)?;
 
@@ -398,9 +381,7 @@ where
         // The returned values are os_context, retdata_size, retdata_ptr.
         let os_context_end = (self.vm.get_ap() - 2)?;
 
-        let stack_ptr = self
-            .cairo_runner
-            .get_builtins_final_stack(&mut self.vm, os_context_end)?;
+        let stack_ptr = self.cairo_runner.get_builtins_final_stack(os_context_end)?;
 
         let final_os_context_ptr = (stack_ptr - 1)?;
 

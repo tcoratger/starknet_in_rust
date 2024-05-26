@@ -113,7 +113,7 @@ cairo-%.tar:
 # Test Cairo Kakarot Contracts
 # =============================
 
-KAKAROT_VERSION=v0.1.1
+KAKAROT_VERSION=v0.1.8
 KAKAROT_DIR=starknet_programs/kakarot
 
 KAKAROT_FILES:=$(wildcard $(KAKAROT_DIR)/*.json)
