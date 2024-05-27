@@ -179,7 +179,10 @@ fn test_kakarot_contract() {
             Felt252::MAX,
         ),
         (
-            (kakarot_address.clone(), compute_storage_key("owner", &[])),
+            (
+                kakarot_address.clone(),
+                compute_storage_key("Ownable_owner", &[]),
+            ),
             eoa_address.0,
         ),
     ];
@@ -187,44 +190,48 @@ fn test_kakarot_contract() {
     // Prepare storage for EOA
     let eoa_storage = vec![
         // Set the bytecode
-        (
-            (contract_account_address.clone(), bytecode_storage_key),
-            Felt252::ZERO,
-        ),
+        ((eoa_address.clone(), bytecode_storage_key), Felt252::ZERO),
         (
             (
-                contract_account_address.clone(),
+                eoa_address.clone(),
                 compute_storage_key("Account_storage", &[]),
             ),
             Felt252::ZERO,
         ),
         (
             (
-                contract_account_address.clone(),
+                eoa_address.clone(),
                 compute_storage_key("Account_is_initialized", &[]),
             ),
             Felt252::ONE,
         ),
         (
             (
-                contract_account_address.clone(),
+                eoa_address.clone(),
                 compute_storage_key("Account_nonce", &[]),
             ),
             contract_nonce,
         ),
         (
             (
-                contract_account_address.clone(),
+                eoa_address.clone(),
                 compute_storage_key("Account_implementation", &[]),
             ),
             Felt252::from_bytes_be(&eoa_class_hash.0),
         ),
         (
             (
-                contract_account_address.clone(),
+                eoa_address.clone(),
                 compute_storage_key("Account_evm_address", &[]),
             ),
             eoa_address.0,
+        ),
+        (
+            (
+                eoa_address.clone(),
+                compute_storage_key("Ownable_owner", &[]),
+            ),
+            kakarot_address.0,
         ),
     ];
 
@@ -269,6 +276,13 @@ fn test_kakarot_contract() {
                 compute_storage_key("Account_evm_address", &[]),
             ),
             contract_account_evm_address,
+        ),
+        (
+            (
+                contract_account_address.clone(),
+                compute_storage_key("Ownable_owner", &[]),
+            ),
+            kakarot_address.0,
         ),
     ];
 
