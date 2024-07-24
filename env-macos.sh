@@ -4,11 +4,20 @@
 # It sets the LLVM environment variables.
 export LIBRARY_PATH=/opt/homebrew/lib
 MLIR_SYS_180_PREFIX="$(brew --prefix llvm@18)"
-LLVM_SYS_180_PREFIX="$(brew --prefix llvm@18)"
+LLVM_SYS_181_PREFIX="$(brew --prefix llvm@18)"
 TABLEGEN_180_PREFIX="$(brew --prefix llvm@18)"
 CAIRO_NATIVE_RUNTIME_LIBDIR="$(pwd)/target/debug"
 
 export MLIR_SYS_180_PREFIX
-export LLVM_SYS_180_PREFIX
+export LLVM_SYS_181_PREFIX
 export TABLEGEN_180_PREFIX
 export CAIRO_NATIVE_RUNTIME_LIBDIR
+
+
+
+export LIBRARY_PATH=/opt/homebrew/lib
+export MLIR_SYS_180_PREFIX="$(brew --prefix llvm@18)"
+export LLVM_SYS_181_PREFIX="$(brew --prefix llvm@18)"
+export TABLEGEN_180_PREFIX="$(brew --prefix llvm@18)"
+export CAIRO_NATIVE_RUNTIME_LIBDIR="$(pwd)/target/debug"
+# cargo test --package starknet_in_rust --features cairo-native --test tests -- integration_tests::complex_contracts::kakarot::test_kakarot_contract --exact --show-output

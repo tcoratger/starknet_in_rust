@@ -20,6 +20,11 @@ use crate::integration_tests::cairo_native::TestStateSetup;
 #[test]
 // #[ignore = "linked to native issue #499 and #500"]
 fn test_kakarot_contract() {
+    use tracing_subscriber;
+
+    // Initialize the logger for this test
+    let _ = tracing_subscriber::fmt::try_init();
+
     // Evm constants
     let private_key: B256 =
         B256::from_str("0x6ae82d865482a203603ecbf25c865e082396d7705a6bbce92c1ff1d6ab9b503c")

@@ -6,12 +6,13 @@ description = "A Rust implementation of Starknet execution logic"
 license = "Apache-2.0"
 
 [features]
-default = ["with_mimalloc"]
+default = ["with_mimalloc", "cairo-native"]
 with_mimalloc = ["dep:mimalloc"]
 metrics = []
 # Disclaimer: This feature enables state modifications being applied on reverted and failings txs, and also disables address availability check when deploying contracts.
 # Only use for benchmarking using the replay binary
 replay_benchmark = []
+# cairo-native = []
 
 [workspace]
 members = [
@@ -22,11 +23,11 @@ members = [
 ]
 
 [workspace.dependencies]
-cairo-lang-casm = "=2.6.3"
-cairo-lang-sierra = "=2.6.3"
-cairo-lang-starknet = "=2.6.3"
-cairo-lang-utils = "=2.6.3"
-cairo-lang-starknet-classes = "=2.6.3"
+cairo-lang-casm = "=2.6.4"
+cairo-lang-sierra = "=2.6.4"
+cairo-lang-starknet = "=2.6.4"
+cairo-lang-utils = "=2.6.4"
+cairo-lang-starknet-classes = "=2.6.4"
 cairo-vm = { git = "https://github.com/lambdaclass/cairo-vm", rev = "26043e6b1d28dc65ae0ea2063d6f8552c4e9a58c", features = [
   "cairo-1-hints",
 ] }
@@ -43,7 +44,7 @@ cairo-lang-sierra = { workspace = true }
 cairo-lang-starknet = { workspace = true }
 cairo-lang-starknet-classes = { workspace = true }
 cairo-lang-utils = { workspace = true }
-cairo-native = { git = "https://github.com/lambdaclass/cairo_native", rev = "cd75446a486f2200a0af8c8a8a6f374636f21660", optional = true }
+cairo-native = { git = "https://github.com/lambdaclass/cairo_native", rev = "72d10b7", optional = true }
 k256 = "0.13.3"
 p256 = "0.13.2"
 sec1 = "0.7.3"

@@ -143,6 +143,9 @@ $(KAKAROT_DIR)/%.sierra: $(KAKAROT_DIR)/%.contract_class.json
 $(KAKAROT_DIR)/%.casm: $(KAKAROT_DIR)/%.compiled_contract_class.json
 	mv $< $@
 
+clean-kakarot:
+	rm -rf starknet_programs/kakarot/*
+
 # =================
 # Normal rules.
 # =================
